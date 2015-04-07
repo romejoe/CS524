@@ -1,1 +1,1 @@
-# CS524
+# CS524 Project
