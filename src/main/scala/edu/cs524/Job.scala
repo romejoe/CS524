@@ -2,7 +2,7 @@ package edu.cs524
 
 import scala.collection.mutable
 
-class Job(Id: String, taskConfigs: Map[String, mutable.Map[String, Any]]) {
+class Job(Id: String, taskConfigs: Map[String, Map[String, Any]]) {
   var StartTime = 0L
   var EndTime = 0L
 

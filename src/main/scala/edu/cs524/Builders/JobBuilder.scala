@@ -37,8 +37,11 @@ class JobBuilder {
   }
 
   def Build():Job = new Job(
-    jobConfig.get("Id").asInstanceOf[String],
-    taskConfig.toMap
+    jobConfig.get("Id").get.asInstanceOf[String],
+    /* Convert Mutable.Map[String, Mutable.Map] to Map[String, Map] */
+    taskConfig.map({
+      case (i:String, m:mutable.Map[String,Any]) => (i, m.toMap)
+    }).toMap
   )
 
 }
