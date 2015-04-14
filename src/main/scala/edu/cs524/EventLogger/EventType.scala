@@ -7,6 +7,7 @@ object EventType extends Enumeration{
   , WORK
   , IDLE
   , NETWORK
+  , OVERHEAD
   = Value
 
 }

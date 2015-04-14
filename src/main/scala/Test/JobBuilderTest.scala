@@ -1,4 +1,4 @@
-package Experiments
+package Test
 
 import edu.cs524.Builders.JobBuilder
 import edu.cs524.EventLogger.{EventLogger, EventType}
@@ -8,7 +8,7 @@ import edu.cs524.Tasks._
 /**
  * Created by Joey on 4/7/15.
  */
-object Experiment2 {
+object JobBuilderTest {
   def main(args: Array[String]) {
     EventLogger.StartEvent(EventType.IDLE, "Ex1")
     val a:Job = (new JobBuilder)

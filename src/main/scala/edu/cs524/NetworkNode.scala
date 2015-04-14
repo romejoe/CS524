@@ -1,28 +1,44 @@
 package edu.cs524
 
+
 import edu.cs524.EventLogger.EventLogger._
 import edu.cs524.EventLogger.EventType
 
 
-
 trait NetworkNode extends Runnable{
+
+
   var Halt = false
   var netLayer:NetworkLayer = null
+  var ID:String = null
+  var Neighbors:Set[_ <: NetworkNode] = null
 
   def getMainSleepInterval():Long = 100
 
-  override def run() = {
-    StartEvent(EventType.WORK, getID())
-    while(!Halt) {
-      Main()
+  def ShouldDoWork(): Boolean = true
 
-      EndEvent(EventType.WORK, getID())
-      StartEvent(EventType.IDLE, getID())
-      Thread.sleep(getMainSleepInterval())
-      EndEvent(EventType.IDLE, getID())
-      StartEvent(EventType.WORK, getID())
+  override def run() = {
+    StartEvent(EventType.OVERHEAD, getID())
+    Setup()
+    while(!Halt) {
+      if(ShouldDoWork()) {
+        EndEvent(EventType.OVERHEAD, getID())
+        StartEvent(EventType.WORK, getID())
+        try {
+          Main()
+        } catch {
+          case e: Exception =>
+        }
+        EndEvent(EventType.WORK, getID())
+        //StartEvent(EventType.IDLE, getID())
+        StartEvent(EventType.OVERHEAD, getID())
+        Thread.sleep(getMainSleepInterval())
+        //EndEvent(EventType.IDLE, getID())
+        //StartEvent(EventType.OVERHEAD, getID())
+      }
     }
-    EndEvent(EventType.WORK, getID())
+    Cleanup()
+    EndEvent(EventType.OVERHEAD, getID())
   }
 
   def Exit() ={
@@ -30,7 +46,15 @@ trait NetworkNode extends Runnable{
     //break thread sleep
   }
 
-  def Main()
 
-  def getID():String
+  def SetNeighborNodes(nodes:Set[_ <: NetworkNode])={
+    Neighbors = nodes
+  }
+
+  def Setup() = {}
+  def Main()
+  def Cleanup() = {}
+
+  def setID(newID:String) = ID = newID
+  def getID():String = ID
 }

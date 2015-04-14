@@ -5,6 +5,8 @@ class Environment(netLayer:NetworkLayer, master:Master, workers:Set[Worker]) {
   var workerThreads:ThreadGroup = new ThreadGroup("Workers")
   var masterThread:Thread = null
 
+  def GetMaster() = master
+
   def StartEnvironment()={
 
     threads = threads ++ workers.map(new Thread(workerThreads,_))

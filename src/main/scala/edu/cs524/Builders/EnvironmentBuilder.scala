@@ -1,6 +1,6 @@
 package edu.cs524.Builders
 
-import edu.cs524.{Environment, Master, NetworkLayer, Worker}
+import edu.cs524._
 
 class EnvironmentBuilder {
   val NetworkLayerID = "NetworkLayer"
@@ -49,7 +49,7 @@ class EnvironmentBuilder {
     val NetLayer: NetworkLayer = envProperties.get(NetworkLayerID).get
       .asInstanceOf[Class[_ <: NetworkLayer]].newInstance()
 
-    val master: Master = masterProperties.get(MasterID).get
+    val master: Master = masterProperties.get("Type").get
       .asInstanceOf[Class[_ <: Master]].newInstance()
     val workers: Set[Worker] = Set() ++ workerProperties.map(
     { case (id, props) => {
@@ -61,10 +61,14 @@ class EnvironmentBuilder {
     }
     })
 
-    NetLayer.RegisterNode(master)
-    workers.foreach(NetLayer.RegisterNode(_))
+//    NetLayer.RegisterNode(master)
+//    workers.foreach(NetLayer.RegisterNode(_))
+    master.netLayer = NetLayer
+    workers.foreach(_.netLayer = NetLayer)
 
-    new Environment(NetLayer,master, workers)
+    master.SetNeighborNodes(workers)
+    workers.foreach(_.SetMasterNode(master))
+    new Environment(NetLayer, master, workers)
 
   }
 

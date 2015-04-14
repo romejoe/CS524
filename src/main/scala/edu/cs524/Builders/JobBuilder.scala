@@ -10,6 +10,7 @@ class JobBuilder {
 
   val taskConfig:mutable.Map[String, mutable.Map[String, Any]] = new mutable.HashMap
   val jobConfig:mutable.Map[String, Any] = new mutable.HashMap
+  var jobCallback: () => Unit = null
   jobConfig.put("Id", "tmp")
 
   def CreateTask(taskType:Class[_ <: Task], id:String="I"+taskConfig.size):JobBuilder = {
@@ -36,12 +37,19 @@ class JobBuilder {
     this
   }
 
+  def SetJobCallback(callback:()=>Unit):JobBuilder={
+    jobCallback = callback
+
+    this
+  }
+
   def Build():Job = new Job(
     jobConfig.get("Id").get.asInstanceOf[String],
     /* Convert Mutable.Map[String, Mutable.Map] to Map[String, Map] */
     taskConfig.map({
       case (i:String, m:mutable.Map[String,Any]) => (i, m.toMap)
-    }).toMap
+    }).toMap,
+    jobCallback
   )
 
 }

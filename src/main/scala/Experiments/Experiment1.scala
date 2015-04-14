@@ -1,30 +1,50 @@
 package Experiments
 
-import edu.cs524.Builders.JobBuilder
-import edu.cs524.EventLogger.{EventType, EventLogger}
-import edu.cs524.Job
+import edu.cs524.Builders.{EnvironmentBuilder, JobBuilder}
+import edu.cs524.EventLogger.EventLogger
+import edu.cs524.MasterImpl.RoundRobinMaster
+import edu.cs524.NetworkImpl.SimpleNet
 import edu.cs524.Tasks._
+import edu.cs524.WorkerImpl.SimpleWorker
+import edu.cs524.{Environment, Job}
 
 /**
  * Created by Joey on 4/7/15.
  */
 object Experiment1 {
   def main(args: Array[String]) {
-    EventLogger.StartEvent(EventType.IDLE, "Ex1")
-    val a:Job = (new JobBuilder)
+    var canProceed:Boolean = false
+    val jobBuilder = (new JobBuilder)
+    for(i <- 1 to 100){
+      jobBuilder.CreateTask(classOf[SleeperTask])
+        .SetTaskProperty("Timeout", 5000L)
+
+    }
+
+    /*val job:Job = (new JobBuilder)
       .CreateTask(classOf[SleeperTask])
-
-      .SetTaskProperty("Timeout", 10000L)
+      .SetTaskProperty("Timeout", 1000L)
       .Build()
+*/
+    jobBuilder.SetJobCallback(()=>canProceed = true)
+    val job:Job = jobBuilder.Build()
 
-    a.GetTasks()
-    EventLogger.EndEvent(EventType.IDLE, "Ex1")
+    val envBuilder = (new EnvironmentBuilder)
+      .SetMaster(classOf[RoundRobinMaster])
+      .SetNetworkLayer(classOf[SimpleNet])
 
-    (1 to 100).foreach(a => {
-      EventLogger.StartEvent(EventType.WORK,"Ex1")
-      Thread sleep a
-      EventLogger.EndEvent(EventType.WORK,"Ex1")
-    })
+    for(i <- 1 to 10){
+      envBuilder.CreateWorker(classOf[SimpleWorker])
+    }
+
+    val env:Environment = envBuilder.Build()
+
+    env.StartEnvironment()
+    env.GetMaster().SubmitJob(job)
+
+    while(!canProceed){Thread.sleep(15)}
+
+    env.StopEnvironment()
     EventLogger.CollectResults
 
 
