@@ -12,7 +12,8 @@ class Job(Id: String, taskConfigs: Map[String, Map[String, Any]]) {
     case (taskId: String, props: Map[String, Any]) => {
       val t: Task = props.get("Type").get.asInstanceOf[Class[_ <: Task]].newInstance()
       t.Init(props)
-      (props.get("Id").get.asInstanceOf[String], t)
+      t.setID(taskId)
+      (taskId, t)
     }
   }
 
