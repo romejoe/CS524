@@ -63,6 +63,7 @@ class EnvironmentBuilder {
 
 //    NetLayer.RegisterNode(master)
 //    workers.foreach(NetLayer.RegisterNode(_))
+    master.setID("Master")
     master.netLayer = NetLayer
     workers.foreach(_.netLayer = NetLayer)
 

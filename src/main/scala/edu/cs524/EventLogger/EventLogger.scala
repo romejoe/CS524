@@ -3,23 +3,27 @@ package edu.cs524.EventLogger
 import edu.cs524.EventLogger.EventType._
 import org.joda.time.DateTime
 
-import scala.collection.mutable
-
 /**
  * Created by Joey on 4/9/15.
  */
 object EventLogger {
   var CompletedTasks:Seq[(/*ID*/String, EventType, /*StartTime*/Long, /*EndTime*/Long)] = Seq.empty
-  val InProgressTasks:mutable.Map[(String,EventType), Long] = new mutable.HashMap[(String,EventType), Long]
+  val InProgressTasks:java.util.concurrent.ConcurrentMap[(String,EventType), Long] = new java.util.concurrent.ConcurrentHashMap[(String, EventType), Long]()
+  //val InProgressTasks:ConcurrentHashMap[(String,EventType), Long] = new ConcurrentHashMap[(String,EventType), Long]
 
   def StartEvent(event:EventType,ID:String)={
-    InProgressTasks.update ((ID, event), DateTime.now.getMillis)
+
+    InProgressTasks.putIfAbsent ((ID, event), DateTime.now.getMillis)
   }
 
   def EndEvent(event:EventType,ID:String)={
-    val EndTime = DateTime.now.getMillis
-    val StartTime = InProgressTasks.remove(ID, event).get
-    CompletedTasks = CompletedTasks :+ (ID, event, StartTime, EndTime)
+      val EndTime = DateTime.now.getMillis
+
+      val StartTime = InProgressTasks.get(ID, event)
+      InProgressTasks.remove((ID, event))
+
+      CompletedTasks = CompletedTasks :+(ID, event, StartTime, EndTime)
+
   }
 
   def median(s: Seq[Long]):Double  =

@@ -15,6 +15,7 @@ class Job(Id: String, taskConfigs: Map[String, Map[String, Any]], completionCall
     case (taskId: String, props: Map[String, Any]) => {
       val t: Task = props.get("Type").get.asInstanceOf[Class[_ <: Task]].newInstance()
       t.Init(props)
+      assert(taskId != null)
       t.setID(taskId)
       (taskId, t)
     }
@@ -27,6 +28,7 @@ class Job(Id: String, taskConfigs: Map[String, Map[String, Any]], completionCall
 
   def CompleteTask(id: String): Boolean = {
     completedTasks.add(id)
+    print(".")
     if (completedTasks.size == taskMap.size) {
       EventLogger.EventLogger.EndEvent(EventType.JOB, Id)
       completionCallback()

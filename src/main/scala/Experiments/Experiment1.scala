@@ -15,9 +15,9 @@ object Experiment1 {
   def main(args: Array[String]) {
     var canProceed:Boolean = false
     val jobBuilder = new JobBuilder
-    for(i <- 1 to 1000){
+    for(i <- 1 to 100){
       jobBuilder.CreateTask(classOf[SleeperTask])
-        .SetTaskProperty("Timeout", 5000L)
+        .SetTaskProperty("Timeout", 1000L)
 
     }
 
