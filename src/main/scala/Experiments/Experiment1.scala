@@ -14,18 +14,13 @@ import edu.cs524.{Environment, Job}
 object Experiment1 {
   def main(args: Array[String]) {
     var canProceed:Boolean = false
-    val jobBuilder = (new JobBuilder)
-    for(i <- 1 to 100){
+    val jobBuilder = new JobBuilder
+    for(i <- 1 to 1000){
       jobBuilder.CreateTask(classOf[SleeperTask])
         .SetTaskProperty("Timeout", 5000L)
 
     }
 
-    /*val job:Job = (new JobBuilder)
-      .CreateTask(classOf[SleeperTask])
-      .SetTaskProperty("Timeout", 1000L)
-      .Build()
-*/
     jobBuilder.SetJobCallback(()=>canProceed = true)
     val job:Job = jobBuilder.Build()
 
@@ -33,14 +28,15 @@ object Experiment1 {
       .SetMaster(classOf[RoundRobinMaster])
       .SetNetworkLayer(classOf[SimpleNet])
 
-    for(i <- 1 to 10){
+    for(i <- 1 to 100){
       envBuilder.CreateWorker(classOf[SimpleWorker])
     }
 
     val env:Environment = envBuilder.Build()
 
     env.StartEnvironment()
-    env.GetMaster().SubmitJob(job)
+    env.SubmitJob(job)
+
 
     while(!canProceed){Thread.sleep(15)}
 

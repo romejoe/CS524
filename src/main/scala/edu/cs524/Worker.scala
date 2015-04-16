@@ -8,6 +8,8 @@ trait Worker extends NetworkNode{
   var TaskQueue:ConcurrentLinkedQueue[Task] = new ConcurrentLinkedQueue[Task]()
   def SetMasterNode(m: Master) = master = m
 
+  override def ShouldDoWork(): Boolean = TaskQueue.size() > 0
+
   var props:Map[String, Any] = Map()
 
   def setProperties(map: Map[String, Any]) = props = map

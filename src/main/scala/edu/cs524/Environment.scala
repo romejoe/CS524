@@ -1,6 +1,8 @@
 package edu.cs524
 
 class Environment(netLayer:NetworkLayer, master:Master, workers:Set[Worker]) {
+  def SubmitJob(job: Job) = master.SubmitJob(job)
+
   var threads:Set[Thread] = Set()
   var workerThreads:ThreadGroup = new ThreadGroup("Workers")
   var masterThread:Thread = null

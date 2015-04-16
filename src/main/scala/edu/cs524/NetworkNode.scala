@@ -21,8 +21,10 @@ trait NetworkNode extends Runnable{
     StartEvent(EventType.OVERHEAD, getID())
     Setup()
     while(!Halt) {
+      //StartEvent(EventType.OVERHEAD, getID())
       if(ShouldDoWork()) {
         EndEvent(EventType.OVERHEAD, getID())
+
         StartEvent(EventType.WORK, getID())
         try {
           Main()
@@ -30,11 +32,16 @@ trait NetworkNode extends Runnable{
           case e: Exception =>
         }
         EndEvent(EventType.WORK, getID())
-        //StartEvent(EventType.IDLE, getID())
-        StartEvent(EventType.OVERHEAD, getID())
+
+        StartEvent(EventType.IDLE, getID())
         Thread.sleep(getMainSleepInterval())
-        //EndEvent(EventType.IDLE, getID())
-        //StartEvent(EventType.OVERHEAD, getID())
+        EndEvent(EventType.IDLE, getID())
+
+        StartEvent(EventType.OVERHEAD, getID())
+      }
+      else{
+        EndEvent(EventType.OVERHEAD, getID())
+
       }
     }
     Cleanup()

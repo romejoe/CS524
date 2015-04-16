@@ -4,9 +4,7 @@ import edu.cs524.{Master, Task, Worker}
 
 class RoundRobinMaster extends Master{
 
-  override def Setup() = {
-
-  }
+  override def Setup() = {}
 
   override def ShouldDoWork(): Boolean = !(currentJob == null || isJobRunning)
 
@@ -14,7 +12,6 @@ class RoundRobinMaster extends Master{
     if(currentJob == null || isJobRunning) return
     //else do schedule
 
-    currentJob.Start()
     val tasks:Iterable[Task] = currentJob.GetTasks().values
 
     var workerIterator:Iterator[Worker] = Neighbors.iterator.asInstanceOf[Iterator[Worker]]

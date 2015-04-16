@@ -5,7 +5,7 @@ trait Master extends NetworkNode {
   var isJobRunning: Boolean = false
 
   def SubmitJob(job: Job) = {
-    if (currentJob == null) {
+    if (currentJob == null && !isJobRunning) {
       currentJob = job
       currentJob.Start()
     }
