@@ -2,21 +2,22 @@ package edu.cs524.EventLogger
 
 import edu.cs524.EventLogger.EventType._
 import org.joda.time.DateTime
+import scala.collection.JavaConversions._
 
 /**
  * Created by Joey on 4/9/15.
  */
 object EventLogger {
   var CompletedTasks:Seq[(/*ID*/String, EventType, /*StartTime*/Long, /*EndTime*/Long)] = Seq.empty
-  val InProgressTasks:java.util.concurrent.ConcurrentMap[(String,EventType), Long] = new java.util.concurrent.ConcurrentHashMap[(String, EventType), Long]()
-  //val InProgressTasks:ConcurrentHashMap[(String,EventType), Long] = new ConcurrentHashMap[(String,EventType), Long]
+  val InProgressTasks:java.util.concurrent.ConcurrentMap[(String,EventType), Long] 
+    = new java.util.concurrent.ConcurrentHashMap[(String, EventType), Long]()
 
   def StartEvent(event:EventType,ID:String)={
-
     InProgressTasks.putIfAbsent ((ID, event), DateTime.now.getMillis)
   }
 
   def EndEvent(event:EventType,ID:String)={
+
     this.synchronized {
       val EndTime = DateTime.now.getMillis
 
@@ -26,6 +27,7 @@ object EventLogger {
       //CompletedTasks.add((ID, event, StartTime, EndTime))
       CompletedTasks = CompletedTasks :+(ID, event, StartTime, EndTime)
     }
+
   }
 
   def median(s: Seq[Long]):Double  =
@@ -59,9 +61,13 @@ object EventLogger {
     def rowSeparator(colSizes: Seq[Int]) = colSizes map { "-" * _ } mkString("+", "+", "+")
   }
 
+  def getInProgressNetworkEvents():Int 
+    = InProgressTasks.keySet().filter(_._2 == NETWORK).size()
+
   def CollectResults={
     //group tasks by EventType
-    val TimeDeltas:Map[EventType, Seq[Long]] = CompletedTasks.map(t => (t._2, t._4 - t._3 )).groupBy(_._1).mapValues(_.map(_._2))
+    val TimeDeltas:Map[EventType, Seq[Long]] = CompletedTasks.map(t => (t._2, t._4 - t._3 ))
+      .groupBy(_._1).mapValues(_.map(_._2))
     val Averages = TimeDeltas.mapValues(a => a.sum.toDouble/a.length)
     println()
     println("Average Times by Event type")
@@ -96,4 +102,4 @@ object EventLogger {
     println(Tabulator.format(Seq(headers, avg, med, max, min)))
   }
 
-}
+  }
