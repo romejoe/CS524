@@ -10,6 +10,11 @@ class EnvironmentBuilder {
   var masterProperties: Map[String, Any] = Map()
   var workerProperties: Map[String, Map[String, Any]] = Map()
   var currentWorkerID: String = ""
+  var NeighborAssigner:Set[Worker] =>Unit = (workers:Set[Worker]) =>{
+    for(worker <- workers){
+      worker.SetNeighborNodes(workers - worker)
+    }
+  }
 
   def SetNetworkLayer(layer: Class[_ <: NetworkLayer]): EnvironmentBuilder = {
     envProperties += (NetworkLayerID -> layer)
@@ -45,6 +50,11 @@ class EnvironmentBuilder {
     this
   }
 
+  def SetNeighborAssigner(Fn:Set[Worker]=>Unit)={
+    NeighborAssigner = Fn
+    this
+  }
+
   def Build() = {
     val NetLayer: NetworkLayer = envProperties.get(NetworkLayerID).get
       .asInstanceOf[Class[_ <: NetworkLayer]].newInstance()
@@ -69,6 +79,9 @@ class EnvironmentBuilder {
 
     master.SetNeighborNodes(workers)
     workers.foreach(_.SetMasterNode(master))
+
+    NeighborAssigner(workers)
+
     new Environment(NetLayer, master, workers)
 
   }

@@ -2,7 +2,7 @@ package Experiments
 
 import edu.cs524.Builders.{EnvironmentBuilder, JobBuilder}
 import edu.cs524.EventLogger.EventLogger
-import edu.cs524.MasterImpl.SimpleRoundRobinMaster
+import edu.cs524.MasterImpl.{BulkRoundRobinMaster, SimpleRoundRobinMaster}
 import edu.cs524.NetworkImpl.SimpleNet
 import edu.cs524.Tasks._
 import edu.cs524.WorkerImpl.SimpleWorker
@@ -11,7 +11,7 @@ import edu.cs524.{Environment, Job}
 /**
  * Created by Joey on 4/7/15.
  */
-object Experiment1 {
+object Experiment2 {
   def main(args: Array[String]) {
     var canProceed:Boolean = false
     val jobBuilder = new JobBuilder
@@ -25,7 +25,7 @@ object Experiment1 {
     val job:Job = jobBuilder.Build()
 
     val envBuilder = (new EnvironmentBuilder)
-      .SetMaster(classOf[SimpleRoundRobinMaster])
+      .SetMaster(classOf[BulkRoundRobinMaster])
       .SetNetworkLayer(classOf[SimpleNet])
 
     for(i <- 1 to 100){

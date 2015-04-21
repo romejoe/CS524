@@ -2,9 +2,7 @@ package edu.cs524.MasterImpl
 
 import edu.cs524.{Master, Task, Worker}
 
-class RoundRobinMaster extends Master{
-
-  override def Setup() = {}
+class SimpleRoundRobinMaster extends Master{
 
   override def ShouldDoWork(): Boolean = !(currentJob == null || isJobRunning)
 

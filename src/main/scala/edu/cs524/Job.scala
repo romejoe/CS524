@@ -22,9 +22,11 @@ class Job(Id: String, taskConfigs: Map[String, Map[String, Any]], completionCall
   }
 
 
-  def Start() = EventLogger.EventLogger.StartEvent(EventType.JOB, Id)
+  def Start() = {
+    EventLogger.EventLogger.StartEvent(EventType.JOB, Id)
+  }
 
-  def GetTasks(): Map[String, Task] = taskMap.toMap
+  def GetTasks(): Map[String, Task] = taskMap
 
   def CompleteTask(id: String): Boolean = {
     completedTasks.add(id)
