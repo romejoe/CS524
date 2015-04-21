@@ -2,11 +2,11 @@ package Experiments
 
 import edu.cs524.Builders.{EnvironmentBuilder, JobBuilder}
 import edu.cs524.EventLogger.EventLogger
-import edu.cs524.MasterImpl.{BulkRoundRobinSubsetMaster, BulkRoundRobinMaster}
+import edu.cs524.MasterImpl.BulkRoundRobinSubsetMaster
 import edu.cs524.NetworkImpl.SimpleNet
 import edu.cs524.Tasks._
-import edu.cs524.WorkerImpl.{GreedyWorkStealerWorker, SimpleWorker}
-import edu.cs524.{Worker, Environment, Job}
+import edu.cs524.WorkerImpl.GreedyWorkStealerWorker
+import edu.cs524.{Environment, Job, Worker}
 
 /**
  * Created by Joey on 4/7/15.

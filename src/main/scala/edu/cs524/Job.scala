@@ -29,14 +29,16 @@ class Job(Id: String, taskConfigs: Map[String, Map[String, Any]], completionCall
   def GetTasks(): Map[String, Task] = taskMap
 
   def CompleteTask(id: String): Boolean = {
-    completedTasks.add(id)
-    print(".")
-    if (completedTasks.size == taskMap.size) {
-      EventLogger.EventLogger.EndEvent(EventType.JOB, Id)
-      completionCallback()
-      return true
+    this.synchronized {
+      completedTasks.add(id)
+      print(".")
+      if (completedTasks.size == taskMap.size) {
+        EventLogger.EventLogger.EndEvent(EventType.JOB, Id)
+        completionCallback()
+        return true
+      }
+      return false
     }
-    return false
   }
 
 }

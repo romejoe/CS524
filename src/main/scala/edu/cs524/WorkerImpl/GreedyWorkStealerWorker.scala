@@ -1,6 +1,6 @@
 package edu.cs524.WorkerImpl
 
-import edu.cs524.{Master, Task, Worker}
+import edu.cs524.{Task, Worker}
 
 /**
  * Created by jstanton on 4/19/15.
@@ -10,7 +10,7 @@ class GreedyWorkStealerWorker extends WorkStealerWorker {
     val maxAmountToSteal = worker.TaskQueue.size() / 2
     var i = 0
     while (i < maxAmountToSteal) {
-      val task: Task = worker.TaskQueue.peek()
+      val task: Task = worker.TaskQueue.poll()
       if (task != null)
         TaskQueue.add(task)
       else

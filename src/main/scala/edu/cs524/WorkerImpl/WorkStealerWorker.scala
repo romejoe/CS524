@@ -7,7 +7,7 @@ import edu.cs524.{Master, Task, Worker}
  */
 class WorkStealerWorker extends Worker{
   def StealWork(worker: Worker): Boolean = {
-    val task: Task = worker.TaskQueue.remove()
+    val task: Task = worker.TaskQueue.poll()
     if(task != null){
       TaskQueue.add(task)
       return true
@@ -26,10 +26,12 @@ class WorkStealerWorker extends Worker{
     TaskQueue.size() > 0
   }
   override def Main(): Unit = {
-    val task = TaskQueue.poll()
-    if (task == null) return
+    do {
+      val task = TaskQueue.poll()
+      if (task == null) return
 
-    task.run()
-    netLayer.PerformRPC(getID(), master, _.asInstanceOf[Master].CompleteTask(task.getID()))
+      task.run()
+      netLayer.PerformRPC(getID(), master, _.asInstanceOf[Master].CompleteTask(task.getID()))
+    }while(true)
   }
 }
