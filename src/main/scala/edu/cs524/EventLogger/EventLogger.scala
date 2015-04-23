@@ -1,5 +1,7 @@
 package edu.cs524.EventLogger
 
+import java.util.concurrent.{ConcurrentMap, ConcurrentHashMap}
+
 import edu.cs524.EventLogger.EventType._
 import org.joda.time.DateTime
 import scala.collection.JavaConversions._
@@ -9,8 +11,8 @@ import scala.collection.JavaConversions._
  */
 object EventLogger {
   var CompletedTasks:Seq[(/*ID*/String, EventType, /*StartTime*/Long, /*EndTime*/Long)] = Seq.empty
-  val InProgressTasks:java.util.concurrent.ConcurrentMap[(String,EventType), Long] 
-    = new java.util.concurrent.ConcurrentHashMap[(String, EventType), Long]()
+  var InProgressTasks:ConcurrentMap[(String,EventType), Long]
+    = new ConcurrentHashMap[(String, EventType), Long]()
 
   def StartEvent(event:EventType,ID:String)={
     InProgressTasks.putIfAbsent ((ID, event), DateTime.now.getMillis)
@@ -63,6 +65,11 @@ object EventLogger {
 
   def getInProgressNetworkEvents():Int 
     = InProgressTasks.keySet().filter(_._2 == NETWORK).size()
+
+  def Reset() = {
+    CompletedTasks = Seq.empty
+    InProgressTasks = new ConcurrentHashMap[(String, EventType), Long]()
+  }
 
   def CollectResults(DisplayOldFormat:Boolean = false)={
     //group tasks by EventType
