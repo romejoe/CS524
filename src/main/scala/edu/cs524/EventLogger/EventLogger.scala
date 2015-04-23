@@ -108,12 +108,31 @@ object EventLogger {
       }
     println()
     //build header seq
-    val headers:Seq[String] = Seq("") ++ TimeDeltas.keySet.map(_.toString)
-    val avg:Seq[String] = Seq("Average") ++ Averages.values.map("%.2f".format(_))
-    val med:Seq[String] = Seq("Median") ++ Medians.values.map(_.toString)
-    val max:Seq[String] = Seq("Max") ++ Maxs.values.map(_.toString)
-    val min:Seq[String] = Seq("Min") ++ Mins.values.map(_.toString)
-    println(Tabulator.format(Seq(headers, avg, med, max, min)))
+    //val headers:Seq[String] = Seq("") ++ TimeDeltas.keySet.toSeq.sortBy(_).map(_.toString)
+    //val headers:Seq[String] = Seq("") ++ TimeDeltas.keySet.map(a => (a,a.toString))
+    //println(headers)
+    //val avg:Seq[String] = Seq("Average") ++ Averages.entrySet().toSeq.sortBy(_.getKey).map("%.2f".format(_.getValue.asInstanceOf[Double]))
+    val avg = /*Seq("Average") ++*/ Averages.mapValues("%.2f".format(_))
+    val med = /*Seq("Median") ++*/ Medians.mapValues(_.toString)
+    val max = /*Seq("Max") ++*/ Maxs.mapValues(_.toString)
+    val min = /*Seq("Min") ++*/ Mins.mapValues(_.toString)
+
+    var Rows:Seq[Seq[String]] = Seq.empty
+    def AppendToRows(Ordering:Seq[EventType], data:Map[EventType, String], label:String)={
+      val newRow = Seq(label) ++ Ordering.map(data.getOrDefault(_,"").asInstanceOf[String])
+      Rows = Rows ++ Seq(newRow)
+    }
+
+    val colOrdering = TimeDeltas.keySet.toSeq
+    Rows = Rows ++ Seq(Seq("") ++ colOrdering.map(_.toString))
+    AppendToRows(colOrdering, avg, "Average")
+    AppendToRows(colOrdering, med, "Median")
+    AppendToRows(colOrdering, max, "Max")
+    AppendToRows(colOrdering, min, "Min")
+
+
+    //println(Tabulator.format(Seq(headers, avg, med, max, min)))
+    println(Tabulator.format(Rows))
   }
 
   }
