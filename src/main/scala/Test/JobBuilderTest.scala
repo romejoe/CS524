@@ -25,7 +25,7 @@ object JobBuilderTest {
       Thread sleep a
       EventLogger.EndEvent(EventType.WORK,"Ex1")
     })
-    EventLogger.CollectResults
+    EventLogger.CollectResults()
 
 
   }

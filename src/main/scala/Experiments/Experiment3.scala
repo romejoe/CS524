@@ -54,7 +54,7 @@ object Experiment3 {
     while(!canProceed){Thread.sleep(15)}
 
     env.StopEnvironment()
-    EventLogger.CollectResults
+    EventLogger.CollectResults()
 
 
   }
