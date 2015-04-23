@@ -5,7 +5,7 @@ import edu.cs524.EventLogger.EventLogger
 import edu.cs524.MasterImpl.{BulkRoundRobinMaster, BulkRoundRobinSubsetMaster}
 import edu.cs524.NetworkImpl.SimpleNet
 import edu.cs524.Tasks.SleeperTask
-import edu.cs524.WorkerImpl.{GreedyWorkStealerWorker, SimpleWorker}
+import edu.cs524.WorkerImpl.{WorkStealerWorker, GreedyWorkStealerWorker, SimpleWorker}
 import edu.cs524._
 
 object MasterExperiment {
@@ -64,7 +64,21 @@ object MasterExperiment {
       end.SetNeighborNodes(Set() + start)
     }
     runExperiment("BRRa/Simple Worker", 1000, 100, classOf[SimpleWorker], classOf[BulkRoundRobinMaster], classOf[SimpleNet])
-    runExperiment("BRRs/Greedy Work Stealer", 1000, 100, classOf[GreedyWorkStealerWorker], classOf[BulkRoundRobinSubsetMaster], classOf[SimpleNet], RingAssigner)
+
+    runExperiment("BRRa/Lazy Work Stealer/all", 1000, 100, classOf[WorkStealerWorker], classOf[BulkRoundRobinMaster], classOf[SimpleNet])
+    runExperiment("BRRs/Lazy Work Stealer/all", 1000, 100, classOf[WorkStealerWorker], classOf[BulkRoundRobinSubsetMaster], classOf[SimpleNet])
+
+    runExperiment("BRRa/Lazy Work Stealer/ring", 1000, 100, classOf[WorkStealerWorker], classOf[BulkRoundRobinMaster], classOf[SimpleNet], RingAssigner)
+    runExperiment("BRRs/Lazy Work Stealer/ring", 1000, 100, classOf[WorkStealerWorker], classOf[BulkRoundRobinSubsetMaster], classOf[SimpleNet], RingAssigner)
+
+    runExperiment("BRRa/Greedy Work Stealer/all", 1000, 100, classOf[GreedyWorkStealerWorker], classOf[BulkRoundRobinMaster], classOf[SimpleNet])
+    runExperiment("BRRs/Greedy Work Stealer/all", 1000, 100, classOf[GreedyWorkStealerWorker], classOf[BulkRoundRobinSubsetMaster], classOf[SimpleNet])
+
+    runExperiment("BRRa/Greedy Work Stealer/ring", 1000, 100, classOf[GreedyWorkStealerWorker], classOf[BulkRoundRobinMaster], classOf[SimpleNet], RingAssigner)
+    runExperiment("BRRs/Greedy Work Stealer/ring", 1000, 100, classOf[GreedyWorkStealerWorker], classOf[BulkRoundRobinSubsetMaster], classOf[SimpleNet], RingAssigner)
+
+    //rerun to verify warmup
+    runExperiment("BRRa/Simple Worker", 1000, 100, classOf[SimpleWorker], classOf[BulkRoundRobinMaster], classOf[SimpleNet])
   }
   /**/
 
