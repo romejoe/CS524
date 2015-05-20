@@ -1,24 +1,26 @@
 package edu.cs524.WorkerImpl
 
 import edu.cs524.{Master, Task, Worker}
-
 /**
  * Created by jstanton on 4/19/15.
  */
 class WorkStealerWorker extends Worker{
-  def StealWork(worker: Worker): Boolean = {
+  def StealWork(worker: Worker): Seq[Task] = {
     val task: Task = worker.TaskQueue.poll()
     if(task != null){
-      TaskQueue.add(task)
-      return true
+      //TaskQueue.add(task)
+      return Seq(task)
     }
-    false
+    Seq.empty
   }
 
   override def ShouldDoWork():Boolean = {
     if(TaskQueue.size() == 0){
       for(worker <- Neighbors){
-        if(netLayer.PerformRPC(getID(), worker, (w)=>StealWork(w.asInstanceOf[Worker])).asInstanceOf[Boolean])
+        val newTasks:Seq[Task] = netLayer.PerformRPC(getID(), worker, (w)=>StealWork(w.asInstanceOf[Worker])).asInstanceOf[Seq[Task]]
+        if(newTasks.size > 0)
+          newTasks.foreach(TaskQueue.add(_))
+          //TaskQueue.addAll(newTasks)
           return true
       }
     }
